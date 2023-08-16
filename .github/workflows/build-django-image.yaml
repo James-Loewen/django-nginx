@@ -1,0 +1,51 @@
+name: build django image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - backend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Image Meta
+        id: image-meta
+        run: |
+          SHORT_REF=${GITHUB_SHA::8}
+
+          DJANGO_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/django-image
+          TAGS="${DJANGO_IMAGE}:${SHORT_REF},${DJANGO_IMAGE}:latest"
+
+          # Set output parameters
+          echo "TAGS=${TAGS}" >> "$GITHUB_OUTPUT"
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+        with:
+          platforms: all
+      
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Build and Push Django
+        uses: docker/build-push-action@v4
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: ./backend/.
+          file: ./backend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.image-meta.outputs.TAGS }}
