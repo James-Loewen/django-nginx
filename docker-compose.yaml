@@ -1,0 +1,13 @@
+# For local development
+services:
+  django:
+    build: ./backend/.
+    volumes:
+      - ./backend:/app
+    expose:
+      - 8000
+    # command: gunicorn config.wsgi
+  nginx:
+    build: ./frontend/.
+    ports:
+      - 3000:80
