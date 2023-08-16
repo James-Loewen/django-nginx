@@ -13,6 +13,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+# Get secrets like this: SECRET_KEY = get_secret("SECRET_KEY")
+def get_secret(key, default=None):
+    value = os.getenv(key, default)
+    if value and os.path.isfile(value):
+        with open(value) as f:
+            return f.read().strip()
+    return value
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,7 +34,7 @@ SECRET_KEY = "django-insecure-d%)+a-44xk_kof5l=eiy7-99=g!im8ks9l^k9g!98+5aollj#q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-allowed_hosts_env = os.getenv("ALLOWED_HOSTS", False)
+allowed_hosts_env = get_secret("ALLOWED_HOSTS", False)
 if allowed_hosts_env:
     ALLOWED_HOSTS = allowed_hosts_env.split(',')
 else:
@@ -81,8 +89,13 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": get_secret("DB_ENGINE", "django.db.backends.sqlite3"),
+        # in this case the default param is a file so use os.getenv
+        "NAME": os.getenv("DB_NAME", BASE_DIR / "db.sqlite3"),
+        "USER": get_secret("DB_USER"),
+        "PASSWORD": get_secret("DB_PASSWORD_FILE"),
+        "HOST": get_secret("DB_HOST"),
+        "PORT": get_secret("DB_PORT"),
     }
 }
 
@@ -130,7 +143,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-csrf_trusted_origins_env = os.getenv("CSRF_TRUSTED_ORIGINS", False)
+csrf_trusted_origins_env = get_secret("CSRF_TRUSTED_ORIGINS", False)
 if csrf_trusted_origins_env:
     CSRF_TRUSTED_ORIGINS = csrf_trusted_origins_env.split(',')
 else:
