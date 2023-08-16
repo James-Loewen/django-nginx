@@ -16,11 +16,14 @@ from pathlib import Path
 
 # Get secrets like this: SECRET_KEY = get_secret("SECRET_KEY")
 def get_secret(key, default=None):
-    value = os.getenv(key, default)
-    if value and os.path.isfile(value):
-        with open(value) as f:
-            return f.read().strip()
-    return value
+    try:
+        value = os.environ[key]
+        if os.path.isfile(value):
+            with open(value) as f:
+                return f.read().strip()
+        return value
+    except KeyError:
+        return default
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -93,11 +96,11 @@ DATABASES = {
     "default": {
         "ENGINE": get_secret("DB_ENGINE", "django.db.backends.sqlite3"),
         # in this case the default param is a file so use os.getenv
-        "NAME": os.getenv("DB_NAME", BASE_DIR / "db.sqlite3"),
-        "USER": get_secret("DB_USER"),
-        "PASSWORD": get_secret("DB_PASSWORD_FILE"),
-        "HOST": get_secret("DB_HOST"),
-        "PORT": get_secret("DB_PORT"),
+        "NAME": get_secret("DB_NAME_FILE", BASE_DIR / "db.sqlite3"),
+        "USER": get_secret("DB_USER_FILE", ""),
+        "PASSWORD": get_secret("DB_PASSWORD_FILE", ""),
+        "HOST": get_secret("DB_HOST", ""),
+        "PORT": get_secret("DB_PORT", ""),
     }
 }
 
