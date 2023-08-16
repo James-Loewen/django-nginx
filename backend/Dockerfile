@@ -1,8 +1,6 @@
-# syntax=docker/dockerfile:1.4
-
 FROM python:slim-bullseye
 
-WORKDIR /app
+WORKDIR /home/app
 
 COPY requirements.txt .
 RUN \
@@ -10,5 +8,4 @@ RUN \
     python -m pip install -r requirements.txt
 COPY . .
 
-# I don't think command will ever be used...
 CMD [ "python", "manage.py", "runserver", "0.0.0.0:8000" ]

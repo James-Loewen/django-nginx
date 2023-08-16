@@ -3,11 +3,17 @@ services:
   django:
     build: ./backend/.
     volumes:
-      - ./backend:/app
+      - ./backend:/home/app
+      - static_volume:/home/app/staticfiles
     expose:
       - 8000
-    # command: gunicorn config.wsgi
+    command: gunicorn config.wsgi
   nginx:
     build: ./frontend/.
+    volumes:
+      - static_volume:/home/app/staticfiles
     ports:
       - 3000:80
+
+volumes:
+  static_volume:
