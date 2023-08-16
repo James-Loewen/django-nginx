@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+
 # Get secrets like this: SECRET_KEY = get_secret("SECRET_KEY")
 def get_secret(key, default=None):
     value = os.getenv(key, default)
@@ -20,6 +21,7 @@ def get_secret(key, default=None):
         with open(value) as f:
             return f.read().strip()
     return value
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,7 +38,7 @@ DEBUG = True
 
 allowed_hosts_env = get_secret("ALLOWED_HOSTS", False)
 if allowed_hosts_env:
-    ALLOWED_HOSTS = allowed_hosts_env.split(',')
+    ALLOWED_HOSTS = allowed_hosts_env.split(",")
 else:
     ALLOWED_HOSTS = []
 
@@ -145,6 +147,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 csrf_trusted_origins_env = get_secret("CSRF_TRUSTED_ORIGINS", False)
 if csrf_trusted_origins_env:
-    CSRF_TRUSTED_ORIGINS = csrf_trusted_origins_env.split(',')
+    CSRF_TRUSTED_ORIGINS = csrf_trusted_origins_env.split(",")
 else:
     CSRF_TRUSTED_ORIGINS = []
