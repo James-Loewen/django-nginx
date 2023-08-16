@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +26,11 @@ SECRET_KEY = "django-insecure-d%)+a-44xk_kof5l=eiy7-99=g!im8ks9l^k9g!98+5aollj#q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+allowed_hosts_env = os.getenv("ALLOWED_HOSTS", False)
+if allowed_hosts_env:
+    ALLOWED_HOSTS = allowed_hosts_env.split(',')
+else:
+    ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -125,6 +130,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-]
+csrf_trusted_origins_env = os.getenv("CSRF_TRUSTED_ORIGINS", False)
+if csrf_trusted_origins_env:
+    CSRF_TRUSTED_ORIGINS = csrf_trusted_origins_env.split(',')
+else:
+    CSRF_TRUSTED_ORIGINS = []
