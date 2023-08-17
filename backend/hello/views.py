@@ -1,8 +1,9 @@
-from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+from django.http import JsonResponse
 
 
 def hello_world(request):
-    return HttpResponse("<h1>Hello from Django</h1>")
+    return render(request, "hello/index.html")
 
 
 def get_client_ip(request):

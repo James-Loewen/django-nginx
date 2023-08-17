@@ -37,7 +37,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-d%)+a-44xk_kof5l=eiy7-99=g!im8ks9l^k9g!98+5aollj#q"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+debug_env = os.getenv("DEBUG", "").lower()
+DEBUG = debug_env == "true"
 
 allowed_hosts_env = get_secret("ALLOWED_HOSTS", False)
 if allowed_hosts_env:
@@ -73,7 +74,9 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -138,10 +141,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
-STATIC_URL = "static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "assets",
+]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "static/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

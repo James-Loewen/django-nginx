@@ -1,0 +1,30 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  padding-top: 4rem;
+  min-height: 100vh;
+}
+
+main {
+  max-width: 60ch;
+  margin: auto;
+}
+
+h1 {
+  font-size: 2rem;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  color: #22232a;
+}
+
+a {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
